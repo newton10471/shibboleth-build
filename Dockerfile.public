@@ -1,0 +1,60 @@
+# Run this command as a prereq to pull the centos 7 image: docker pull centos:7
+# Use this command to invoke: docker build -t shibboleth-sp . --progress=plain
+
+FROM centos:7
+
+WORKDIR /tmp
+
+RUN touch /tmp/.in_docker
+
+COPY pkg_dir/* /tmp/
+
+ENV PREFIX=/opt/local/shibboleth-sp
+
+RUN mkdir -p $PREFIX
+
+ENV PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
+
+RUN yum install -y bzip2 make libgcc glibc-devel gcc gcc-c++ perl perl-IPC-Cmd zlib-devel wget
+
+RUN tar zxvf boost_1_83_0.tar.gz
+
+ENV BOOST_ROOT=/tmp/boost_1_83_0
+
+ENV BOOST_HOME=/tmp/boost_1_83_0
+
+RUN ls -l /tmp
+
+RUN ls -l $PREFIX
+
+RUN ls -l /tmp/.in_docker
+
+RUN tar zxvf log4shib-2.0.1.tar.gz
+
+RUN cd /tmp/log4shib-2.0.1; ./configure --prefix=$PREFIX --disable-static --disable-doxygen; make && make install
+
+RUN tar xvf xerces-c-3.2.4.tar.bz2
+
+RUN cd xerces-c-3.2.4; ./configure --prefix=$PREFIX --enable-netaccessor-socket; make && make install
+
+RUN tar xvf openssl-3.0.10.tar.gz
+
+RUN cd openssl-3.0.10; ./config --prefix=$PREFIX shared; make clean; make && make install
+
+RUN tar zxvf xml-security-c-2.0.4.tar.gz
+
+RUN cd xml-security-c-2.0.4; ./configure  --without-xalan --disable-static --prefix=$PREFIX; make && make install
+
+RUN tar zxvf xmltooling-3.2.4.tar.gz
+
+RUN cd xmltooling-3.2.4; ./configure  --with-log4shib=/bb/shibboleth-sp --without-xalan --disable-static --prefix=$PREFIX -C ; make && make install
+
+RUN ls -lR $PREFIX
+
+RUN touch $HOME/.rnd
+
+RUN tar zxvf opensaml-3.2.1.tar.gz
+
+RUN cd opensaml-3.2.1; ./configure  --without-xalan --disable-static --prefix=$PREFIX -C ; make && make install
+
+RUN ls -lR $PKG_CONFIG_PATH
