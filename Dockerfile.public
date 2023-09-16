@@ -1,5 +1,5 @@
 # Run this command as a prereq to pull the centos 7 image: docker pull centos:7
-# Use this command to invoke: docker build -t shibboleth-sp . --progress=plain
+# Use this command to invoke: docker build -f Dockerfile.public -t shibboleth-sp . --progress=plain
 
 FROM centos:7
 
@@ -15,7 +15,7 @@ RUN mkdir -p $PREFIX
 
 ENV PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
 
-RUN yum install -y bzip2 make libgcc glibc-devel gcc gcc-c++ perl perl-IPC-Cmd zlib-devel wget
+RUN yum install -y bzip2 make libgcc glibc-devel gcc gcc-c++ perl perl-IPC-Cmd zlib zlib-devel libcurl libcurl-devel openssl openssl-devel wget httpd httpd-devel
 
 RUN tar zxvf boost_1_83_0.tar.gz
 
@@ -37,9 +37,9 @@ RUN tar xvf xerces-c-3.2.4.tar.bz2
 
 RUN cd xerces-c-3.2.4; ./configure --prefix=$PREFIX --enable-netaccessor-socket; make && make install
 
-RUN tar xvf openssl-3.0.10.tar.gz
+# RUN tar xvf openssl-3.0.10.tar.gz
 
-RUN cd openssl-3.0.10; ./config --prefix=$PREFIX shared; make clean; make && make install
+# RUN cd openssl-3.0.10; ./config --prefix=$PREFIX shared; make clean; make && make install
 
 RUN tar zxvf xml-security-c-2.0.4.tar.gz
 
@@ -57,4 +57,7 @@ RUN tar zxvf opensaml-3.2.1.tar.gz
 
 RUN cd opensaml-3.2.1; ./configure  --without-xalan --disable-static --prefix=$PREFIX -C ; make && make install
 
-RUN ls -lR $PKG_CONFIG_PATH
+# RUN ls -lR $PKG_CONFIG_PATH
+
+RUN tar zxvf shibboleth-sp-3.4.1.tar.gz 
+RUN cd shibboleth-sp-3.4.1; ./configure --with-log4shib=$PREFIX --enable-apache-24 --with-apxs24 --prefix=$PREFIX

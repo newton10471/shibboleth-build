@@ -8,6 +8,7 @@ wget https://dlcdn.apache.org/santuario/c-library/xml-security-c-2.0.4.tar.gz
 wget http://shibboleth.net/downloads/c++-opensaml/3.2.1/xmltooling-3.2.4.tar.gz
 wget http://shibboleth.net/downloads/c++-opensaml/3.2.1/opensaml-3.2.1.tar.gz
 wget https://www.openssl.org/source/openssl-3.0.10.tar.gz
+wget https://shibboleth.net/downloads/service-provider/3.4.1/shibboleth-sp-3.4.1.tar.gz
 
 cd ../
 
